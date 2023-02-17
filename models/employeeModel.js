@@ -20,15 +20,13 @@ const employeeSchema = new mongoose.Schema(
       select: false,
     },
 
-    role:String,
+    role: String,
 
-    reff_id:String,
-    refferredBy: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
-      },
-    ],
+    reff_id: String,
+    refferredBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
 
     refferredTo: [
       {
@@ -84,22 +82,22 @@ const employeeSchema = new mongoose.Schema(
     experience: [
       {
         company: { type: String, default: "Company Name" },
-        duration:{type: String, default:"0 years"},
+        duration: { type: String, default: "0 years" },
         role: { type: String, default: "worked as" },
         createdAt: { type: Date, default: Date.now() },
       },
     ],
     education: [
       {
-        university:{ type: String, default: "university name" },
+        university: { type: String, default: "university name" },
         degree: { type: String, default: "degree name" },
         passingYear: { type: Date, default: Date.now },
         createdAt: { type: Date, default: Date.now() },
       },
     ],
     skills: [{ type: String }],
-    ctc:{
-      type:String
+    ctc: {
+      type: String,
     },
     notice_period: {
       type: String,
@@ -122,6 +120,20 @@ const employeeSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+
+    request: {
+      type: Boolean,
+      default: false,
+    },
+    notification: [
+      {
+        subject: { type: String, unique: true },
+        message: String,
+        time: Date,
+        expire: Date,
+        display: Boolean,
+      },
+    ],
     isActive: {
       type: Boolean,
       default: false,

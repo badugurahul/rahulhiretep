@@ -48,5 +48,3 @@ export const sendMail = async (OTP, subject, user) => {
     }
   });
 };
-
-// how to create form inside a form in reatJs?

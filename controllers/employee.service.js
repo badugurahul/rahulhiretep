@@ -40,7 +40,6 @@ export const register = async (req, res) => {
     res_user(
       res,
       `OTP sent to : ${user.email}, please verify your email first`,
-
       token,
       user
     );
@@ -168,17 +167,10 @@ export const forgetPassword = async (req, res) => {
     if (!email) {
       return res_failed(res, "Enter your email_id");
     }
-    // else{
-    //   console.log(email)
-    // }
-
     const user = await Employee.findOne({ email });
     if (!user) {
       return res_failed(res, "Invalid Email");
     }
-    // else{
-    //   console.log(user.full_name)
-    // }
 
     //@ Generating OTP
     let otp = generateOtp(6, true, false, false, false);
@@ -495,7 +487,7 @@ export const deleteImage = async (req, res) => {
 export const updateCV = async (req, res) => {
   try {
     if (req.file) {
-      console.log("found")
+      console.log("found");
       console.log(req.file.path);
     } else {
       console.log("not found");
@@ -578,5 +570,50 @@ export const deleteBanner = async (req, res) => {
     res_success(res, "Banner image has successfully deleted", user.cv);
   } catch (error) {
     res_catch(res, error);
+  }
+};
+
+//? DELETE EMPLOYEE
+export const delProfile = async (req, res) => {
+  try {
+    //deleting employee profile
+    const user = await Employee.findByIdAndRemove({ _id: req.user._id });
+    res_user(
+      res,
+      "your account has been logged out and deleted succesfully",
+      null,
+      null
+    );
+  } catch (error) {
+    res_catch(res, error);
+  }
+};
+
+//? Send Request to admin
+export const sendRequest = async (req, res) => {
+  try {
+    const user = await Employee.findById({ _id: req.user._id });
+    if (!user) {
+      res.send("User not found");
+    }
+    let subject = "To certified a user";
+    for (let i = 0; i < user.notification.length; i++) {
+      if (user.notification[i].subject === subject) {
+        return res.send("You have already sent a request");
+      }
+    }
+    user.request = true;
+    user.notification.push({
+      subject,
+      message:
+        "Your request for Verification has been sent to the Administrator",
+      time: Date.now(),
+      expire: Date.now() + 7 * 24 * 60 * 60 * 1000,
+      display: true,
+    });
+    user.save();
+    res.status(200).json({ message: "Request is sent!" });
+  } catch (error) {
+    res.status(400).json({ message: error.message });
   }
 };

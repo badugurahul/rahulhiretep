@@ -1,9 +1,8 @@
 import jwt from "jsonwebtoken";
 import { res_auth, res_catch } from "../global/response.js";
-import { Employee } from "../models/employeeModel.js";
-import { Employer } from "../models/employerModel.js";
+import { Admin } from "../models/adminModel.js";
 
-export const isAuthenticated = async (req, res, next) => {
+export const isAdminAuth = async (req, res, next) => {
   try {
     const { authorization } = req.headers;
     if (!authorization) {
@@ -14,14 +13,8 @@ export const isAuthenticated = async (req, res, next) => {
     console.log("token " + token);
 
     var decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = await Employee.findById(decoded._id);
+    req.admin = await Admin.findById(decoded._id);
     // console.log(req.user._id)
-    if (req.user) {
-      return next();
-    } else {
-      req.user = await Employer.findById(decoded._id);
-    }
-
     next();
   } catch (error) {
     res_catch(res, error);

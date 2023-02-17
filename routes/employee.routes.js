@@ -1,4 +1,5 @@
 import express from "express";
+//@ controllers
 import {
   register,
   resendOtp,
@@ -22,7 +23,9 @@ import {
   updateCV,
   deleteCV,
   updateBanner,
-  deleteBanner
+  deleteBanner,
+  delProfile,
+  sendRequest
 } from "../controllers/employee.service.js";
 
 //@ Upload Image and Files
@@ -56,6 +59,7 @@ employeeRouter.patch("/updatecv", isAuthenticated,uploadCV.single("cv_file"), up
 employeeRouter.delete("/deletecv", isAuthenticated, deleteCV);
 employeeRouter.patch("/updatebanner", isAuthenticated, uploadBannerImage.single("bannerImage"), updateBanner);
 employeeRouter.delete("/deletebanner", isAuthenticated, deleteBanner);
+employeeRouter.delete("/deleteEMPprofile", isAuthenticated, delProfile);
 
 //? Update Technical details
 employeeRouter.post("/addExperince", isAuthenticated, addExperience);
@@ -64,5 +68,8 @@ employeeRouter.post("/addEducation", isAuthenticated, addEducation);
 employeeRouter.delete("/deleteEducation/:id", isAuthenticated, deleteEducation);
 employeeRouter.post("/updateSkills", isAuthenticated, updateSkills);
 employeeRouter.delete("/deleteSkills/:item", isAuthenticated, deleteSkills);
+
+//? Request for Verification
+employeeRouter.patch("/send-request", isAuthenticated, sendRequest);
 
 export default employeeRouter;
